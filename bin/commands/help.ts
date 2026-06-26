@@ -6,6 +6,7 @@ Usage:
   anvil                  Interactive workflow selector
   anvil run <workflow>   Run a workflow
   anvil init             Initialize project
+  anvil transcript       Generate transcripts from sessions
   anvil help             Show this help
 
 Available workflows:
@@ -17,5 +18,6 @@ Options:
 Example:
   anvil
   anvil run interactive
+  anvil transcript
     `);
 }

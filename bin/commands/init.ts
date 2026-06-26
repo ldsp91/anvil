@@ -90,6 +90,13 @@ export async function init(): Promise<void> {
     console.log(`Created ${sessionsPath}`);
   }
 
+  // Create docs/transcripts directory
+  const docsTranscriptsPath = resolve(process.cwd(), "docs", "transcripts");
+  if (!existsSync(docsTranscriptsPath)) {
+    mkdirSync(docsTranscriptsPath, { recursive: true });
+    console.log(`Created ${docsTranscriptsPath}`);
+  }
+
   // Add .sessions to .gitignore if not already present
   if (!existsSync(GITIGNORE_PATH)) {
     writeFileSync(GITIGNORE_PATH, "", "utf-8");
