@@ -1,7 +1,7 @@
 {
   "name": "anvil",
   "version": "0.1.0",
-  "description": "AI agent CLI powered by Sandcastle",
+  "description": "AI agent CLI with workflow system",
   "type": "module",
   "main": "./bin/anvil.ts",
   "bin": {
@@ -23,7 +23,9 @@
     "ai",
     "agent",
     "sandcastle",
-    "cli"
+    "pi",
+    "cli",
+    "workflow"
   ],
   "author": "",
   "license": "MIT",
@@ -38,6 +40,7 @@
     "typescript": "^5"
   },
   "dependencies": {
-    "@ai-hero/sandcastle": "^0.10.0"
+    "@ai-hero/sandcastle": "^0.10.0",
+    "@earendil-works/pi-coding-agent": "^0.80.0"
   }
 }

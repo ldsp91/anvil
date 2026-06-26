@@ -1,15 +1,22 @@
 export function help(): void {
   console.log(`
-anvil - AI Agent CLI
+anvil - AI Agent CLI with workflow system
 
 Usage:
-  anvil <prompt>
-  anvil init
+  anvil                  Interactive workflow selector
+  anvil run <workflow>   Run a workflow
+  anvil init             Initialize project
+  anvil help             Show this help
+
+Available workflows:
+  test    Interactive pi session using the Pi SDK
 
 Options:
-  --help    Show this help message
+  help    Show this help message
 
 Example:
-  anvil "Refactor the auth module to use JWT"
+  anvil
+  anvil run test
+  anvil run test "Review my code"
     `);
 }

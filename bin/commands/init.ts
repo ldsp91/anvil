@@ -1,11 +1,28 @@
+import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const __dirname = resolve(fileURLToPath(import.meta.url), "..");
 const DOCKERFILE = resolve(__dirname, "../..", "Dockerfile");
+const CONFIG_PATH = resolve(process.cwd(), "anvil.json");
+
+const DEFAULT_CONFIG = JSON.stringify(
+  {
+    $schema: "https://raw.githubusercontent.com/ldsp91/anvil/main/anvil.schema.json",
+    model: "claude-sonnet-4-6",
+    maxIterations: 5,
+  },
+  null,
+  2,
+);
 
 export async function init(): Promise<void> {
   const folderName = process.cwd().split("/").pop()!;
+
+  if (!existsSync(CONFIG_PATH)) {
+    writeFileSync(CONFIG_PATH, DEFAULT_CONFIG, "utf-8");
+    console.log(`Created ${CONFIG_PATH}`);
+  }
 
   try {
     Bun.spawnSync(

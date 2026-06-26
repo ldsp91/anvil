@@ -1,44 +1,17 @@
-import { readFileSync } from "node:fs";
-import { resolve } from "node:path";
+import { findWorkflow } from "../workflows/registry.js";
 
-import { pi, run as agentRun } from "@ai-hero/sandcastle";
-import { noSandbox } from "@ai-hero/sandcastle/sandboxes/no-sandbox";
+export async function run(workflowId: string, prompt?: string): Promise<void> {
+  const workflow = findWorkflow(workflowId);
 
-interface AnvilConfig {
-  model?: string;
-  maxIterations?: number;
-}
-
-function loadConfig(): AnvilConfig {
-  const configPath = resolve(process.cwd(), "anvil.json");
-
-  let raw: string;
-  try {
-    raw = readFileSync(configPath, "utf-8");
-  } catch (err: any) {
-    if (err.code === "ENOENT") {
-      console.error(`Error: no anvil.json found in ${process.cwd()}`);
-      console.error(
-        "Create an anvil.json file in your project root to get started.",
-      );
-      process.exit(1);
-    }
-    throw err;
+  if (!workflow) {
+    console.error(`Error: workflow "${workflowId}" not found`);
+    console.error("Run 'anvil help' for available workflows.");
+    process.exit(1);
   }
 
-  return JSON.parse(raw) as AnvilConfig;
-}
+  console.log(`Running workflow: ${workflow.name}`);
+  console.log(`Description: ${workflow.description}`);
+  console.log("---");
 
-export async function run(prompt: string): Promise<void> {
-  const config = loadConfig();
-
-  const result = await agentRun({
-    agent: pi(config.model ?? "claude-sonnet-4-6"),
-    sandbox: noSandbox(),
-    prompt,
-    maxIterations: config.maxIterations ?? 5,
-  });
-
-  console.log(`\nCompleted in ${result.iterations.length} iterations`);
-  console.log(`Branch: ${result.branch}`);
+  await workflow.run(prompt);
 }
