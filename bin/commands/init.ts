@@ -10,7 +10,7 @@ export async function init(): Promise<void> {
   try {
     Bun.spawnSync(
       ["docker", "image", "inspect", `sandcastle:${folderName}`],
-      { stdio: "ignore" },
+      { stdio: ["ignore"] },
     );
 
     console.log(
@@ -23,11 +23,11 @@ export async function init(): Promise<void> {
         "-c",
         `docker ps -a --filter ancestor=sandcastle:${folderName} -q | xargs -r docker rm -f`,
       ],
-      { stdio: "inherit" },
+      { stdio: ["inherit"] },
     );
 
     Bun.spawnSync(["npx", "sandcastle", "docker", "remove-image"], {
-      stdio: "inherit",
+      stdio: ["inherit"],
     });
   } catch {
     console.log(
@@ -47,6 +47,6 @@ export async function init(): Promise<void> {
       DOCKERFILE,
       ".",
     ],
-    { stdio: "inherit", cwd: process.cwd() },
+    { stdio: ["inherit"], cwd: process.cwd() },
   );
 }
