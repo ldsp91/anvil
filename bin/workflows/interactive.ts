@@ -1,4 +1,4 @@
-import { Workflow } from "./types.js";
+import { Workflow, WorkflowRunOptions } from "./types.js";
 import {
   createAgentSessionRuntime,
   createAgentSessionServices,
@@ -6,19 +6,16 @@ import {
   getAgentDir,
   InteractiveMode,
   SessionManager,
-  DefaultResourceLoader,
 } from "@earendil-works/pi-coding-agent";
-import { resolve, dirname } from "path";
-import { fileURLToPath } from "url";
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
-const rootDir = resolve(__dirname, "..", "..");
 
 export const interactiveWorkflow: Workflow = {
   id: "interactive",
   name: "Interactive",
   description: "Full Pi terminal UI with editor and chat",
-  async run() {
+  skills: ["test-skill"],
+  async run(_prompt, options: WorkflowRunOptions) {
+    const skillPaths = options?.skillPaths ?? [];
+
     const createRuntime = async ({
       cwd,
       sessionManager,
@@ -32,7 +29,7 @@ export const interactiveWorkflow: Workflow = {
         cwd,
         resourceLoaderOptions: {
           noSkills: true,
-          additionalSkillPaths: [resolve(rootDir, "skills")],
+          additionalSkillPaths: skillPaths,
         },
       });
       return {

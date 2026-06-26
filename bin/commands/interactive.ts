@@ -1,4 +1,9 @@
 import { listWorkflows } from "../workflows/registry.js";
+import { resolve, dirname } from "path";
+import { fileURLToPath } from "url";
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const rootDir = resolve(__dirname, "..");
 
 function readLine(): Promise<string> {
   return new Promise((resolve) => {
@@ -34,5 +39,9 @@ export async function interactive(): Promise<void> {
   }
 
   const selected = workflows[index];
-  await selected.run();
+  const skillPaths = (selected.skills ?? []).map((name) =>
+    resolve(rootDir, "..", "skills", name)
+  );
+
+  await selected.run(undefined, { skillPaths });
 }

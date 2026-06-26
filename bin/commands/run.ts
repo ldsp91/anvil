@@ -1,4 +1,9 @@
 import { findWorkflow, listWorkflows } from "../workflows/registry.js";
+import { resolve, dirname } from "path";
+import { fileURLToPath } from "url";
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const rootDir = resolve(__dirname, "..");
 
 export async function run(workflowId: string, prompt?: string): Promise<void> {
   if (!workflowId) {
@@ -21,5 +26,9 @@ export async function run(workflowId: string, prompt?: string): Promise<void> {
     process.exit(1);
   }
 
-  await workflow.run(prompt);
+  const skillPaths = (workflow.skills ?? []).map((name) =>
+    resolve(rootDir, "..", "skills", name)
+  );
+
+  await workflow.run(prompt, { skillPaths });
 }
