@@ -12,7 +12,17 @@ export const interactiveWorkflow: Workflow = {
   id: "interactive",
   name: "Interactive",
   description: "Full Pi terminal UI with editor and chat",
-  skills: ["test-skill"],
+  skills: [
+    "engineering/to-prd",
+    "engineering/to-issues",
+    "engineering/grill-with-docs",
+    "productivity/grill-me",
+    "engineering/improve-codebase-architecture",
+    "engineering/diagnosing-bugs",
+    "engineering/prototype",
+    "engineering/domain-modeling",
+    "productivity/grilling",
+  ],
   async run(_prompt, options: WorkflowRunOptions) {
     const skillPaths = options?.skillPaths ?? [];
 
