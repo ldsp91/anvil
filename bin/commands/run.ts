@@ -1,11 +1,23 @@
-import { findWorkflow } from "../workflows/registry.js";
+import { findWorkflow, listWorkflows } from "../workflows/registry.js";
 
 export async function run(workflowId: string, prompt?: string): Promise<void> {
+  if (!workflowId) {
+    console.error("Error: no workflow specified");
+    console.error("Available workflows:");
+    for (const w of listWorkflows()) {
+      console.error(`  ${w.id}    ${w.description}`);
+    }
+    process.exit(1);
+  }
+
   const workflow = findWorkflow(workflowId);
 
   if (!workflow) {
     console.error(`Error: workflow "${workflowId}" not found`);
-    console.error("Run 'anvil help' for available workflows.");
+    console.error("Available workflows:");
+    for (const w of listWorkflows()) {
+      console.error(`  ${w.id}    ${w.description}`);
+    }
     process.exit(1);
   }
 

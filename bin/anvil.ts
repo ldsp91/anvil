@@ -13,7 +13,7 @@ if (args.length === 0) {
   help();
 } else if (args[0] === "init") {
   await init();
-} else if (args[0] === "run" && args[1]) {
+} else if (args[0] === "run") {
   await run(args[1], args[2]);
 } else {
   console.error(`Unknown command: ${args[0]}`);
