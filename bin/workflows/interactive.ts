@@ -1,72 +1,53 @@
 import { Workflow } from "./types.js";
 import {
-  AuthStorage,
-  ModelRegistry,
+  createAgentSessionRuntime,
+  createAgentSessionServices,
+  createAgentSessionFromServices,
+  getAgentDir,
+  InteractiveMode,
   SessionManager,
-  createAgentSession,
 } from "@earendil-works/pi-coding-agent";
-
-function createReadline(): Promise<string> {
-  return new Promise((resolve) => {
-    const rl = require("readline").createInterface({
-      input: process.stdin,
-      output: process.stdout,
-    });
-    rl.question("", (answer: string) => {
-      rl.close();
-      resolve(answer);
-    });
-  });
-}
 
 export const interactiveWorkflow: Workflow = {
   id: "interactive",
   name: "Interactive",
-  description: "Continuous interactive Pi session with readline",
+  description: "Full Pi terminal UI with editor and chat",
   async run() {
-    const authStorage = AuthStorage.create();
-    const modelRegistry = ModelRegistry.create(authStorage);
+    const createRuntime = async ({
+      cwd,
+      sessionManager,
+      sessionStartEvent,
+    }: {
+      cwd: string;
+      sessionManager: ReturnType<typeof SessionManager.create>;
+      sessionStartEvent: unknown;
+    }) => {
+      const services = await createAgentSessionServices({ cwd });
+      return {
+        ...(await createAgentSessionFromServices({
+          services,
+          sessionManager,
+          sessionStartEvent,
+        })),
+        services,
+        diagnostics: services.diagnostics,
+      };
+    };
 
-    const { session } = await createAgentSession({
-      sessionManager: SessionManager.inMemory(),
-      authStorage,
-      modelRegistry,
+    const runtime = await createAgentSessionRuntime(createRuntime, {
+      cwd: process.cwd(),
+      agentDir: getAgentDir(),
+      sessionManager: SessionManager.create(process.cwd()),
     });
 
-    // Stream output to terminal
-    session.subscribe((event) => {
-      if (
-        event.type === "message_update" &&
-        event.assistantMessageEvent.type === "text_delta"
-      ) {
-        process.stdout.write(event.assistantMessageEvent.delta);
-      }
-      if (
-        event.type === "message_update" &&
-        event.assistantMessageEvent.type === "thinking_delta"
-      ) {
-        process.stdout.write(event.assistantMessageEvent.delta);
-      }
+    const mode = new InteractiveMode(runtime, {
+      migratedProviders: [],
+      modelFallbackMessage: undefined,
+      initialMessage: undefined,
+      initialImages: [],
+      initialMessages: [],
     });
 
-    console.log("Pi Interactive Session (type 'exit' to quit)\n");
-
-    try {
-      while (true) {
-        const input = await createReadline();
-
-        if (input.trim().toLowerCase() === "exit") {
-          console.log("\nGoodbye!");
-          break;
-        }
-
-        if (!input.trim()) continue;
-
-        await session.prompt(input);
-        console.log();
-      }
-    } finally {
-      session.dispose();
-    }
+    await mode.run();
   },
 };

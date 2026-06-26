@@ -9,7 +9,7 @@ Usage:
   anvil help             Show this help
 
 Available workflows:
-  interactive    Continuous interactive Pi session with readline
+  interactive    Full Pi terminal UI with editor and chat
 
 Options:
   help    Show this help message
