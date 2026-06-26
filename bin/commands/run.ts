@@ -9,9 +9,5 @@ export async function run(workflowId: string, prompt?: string): Promise<void> {
     process.exit(1);
   }
 
-  console.log(`Running workflow: ${workflow.name}`);
-  console.log(`Description: ${workflow.description}`);
-  console.log("---");
-
   await workflow.run(prompt);
 }

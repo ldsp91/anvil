@@ -34,10 +34,5 @@ export async function interactive(): Promise<void> {
   }
 
   const selected = workflows[index];
-  console.log(`\nRunning workflow: ${selected.name}`);
-  console.log(`Description: ${selected.description}`);
-  console.log("---\n");
-
-  const prompt = await readLine();
-  await selected.run(prompt || undefined);
+  await selected.run();
 }
