@@ -1,4 +1,4 @@
-import { copyFileSync, existsSync, mkdirSync, readdirSync, rmSync, statSync, writeFileSync } from "node:fs";
+import { copyFileSync, existsSync, mkdirSync, readdirSync, readFileSync, rmSync, statSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -7,6 +7,8 @@ const rootDir = resolve(__dirname, "..");
 const SKILLS_DIR = resolve(rootDir, "..", "skills");
 const DOCKERFILE = resolve(__dirname, "../..", "Dockerfile");
 const CONFIG_PATH = resolve(process.cwd(), "anvil.json");
+const GITIGNORE_PATH = resolve(process.cwd(), ".gitignore");
+const SESSIONS_DIR = ".sessions";
 
 const DEFAULT_CONFIG = JSON.stringify(
   {
@@ -79,6 +81,23 @@ export async function init(): Promise<void> {
   if (!existsSync(CONFIG_PATH)) {
     writeFileSync(CONFIG_PATH, DEFAULT_CONFIG, "utf-8");
     console.log(`Created ${CONFIG_PATH}`);
+  }
+
+  // Create .sessions directory for session storage
+  const sessionsPath = resolve(process.cwd(), SESSIONS_DIR);
+  if (!existsSync(sessionsPath)) {
+    mkdirSync(sessionsPath, { recursive: true });
+    console.log(`Created ${sessionsPath}`);
+  }
+
+  // Add .sessions to .gitignore if not already present
+  if (!existsSync(GITIGNORE_PATH)) {
+    writeFileSync(GITIGNORE_PATH, "", "utf-8");
+  }
+  const gitignoreContent = readFileSync(GITIGNORE_PATH, "utf-8");
+  if (!gitignoreContent.includes(SESSIONS_DIR)) {
+    writeFileSync(GITIGNORE_PATH, gitignoreContent + `\n${SESSIONS_DIR}\n`, "utf-8");
+    console.log(`Added ${SESSIONS_DIR} to .gitignore`);
   }
 
   await cloneAndCopySkills();

@@ -7,6 +7,9 @@ import {
   InteractiveMode,
   SessionManager,
 } from "@earendil-works/pi-coding-agent";
+import { resolve } from "path";
+
+const SESSION_DIR = ".sessions";
 
 export const interactiveWorkflow: Workflow = {
   id: "interactive",
@@ -25,6 +28,7 @@ export const interactiveWorkflow: Workflow = {
   ],
   async run(_prompt, options: WorkflowRunOptions) {
     const skillPaths = options?.skillPaths ?? [];
+    const sessionDir = resolve(process.cwd(), SESSION_DIR);
 
     const createRuntime = async ({
       cwd,
@@ -56,7 +60,7 @@ export const interactiveWorkflow: Workflow = {
     const runtime = await createAgentSessionRuntime(createRuntime, {
       cwd: process.cwd(),
       agentDir: getAgentDir(),
-      sessionManager: SessionManager.create(process.cwd()),
+      sessionManager: SessionManager.create(process.cwd(), sessionDir),
     });
 
     const mode = new InteractiveMode(runtime, {
