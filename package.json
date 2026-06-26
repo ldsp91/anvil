@@ -1,0 +1,42 @@
+{
+  "name": "anvil",
+  "version": "0.1.0",
+  "description": "AI agent CLI powered by Sandcastle",
+  "type": "module",
+  "main": "./bin/anvil.ts",
+  "bin": {
+    "anvil": "./bin/anvil.ts"
+  },
+  "exports": {
+    ".": {
+      "import": "./bin/anvil.ts"
+    }
+  },
+  "files": [
+    "bin/"
+  ],
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "ai",
+    "agent",
+    "sandcastle",
+    "cli"
+  ],
+  "author": "",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/github-of-me/anvil"
+  },
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "@ai-hero/sandcastle": "^0.10.0"
+  }
+}

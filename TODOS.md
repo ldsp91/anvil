@@ -1,0 +1,1 @@
+- Transcripts für alle Sessions machen
