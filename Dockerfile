@@ -10,6 +10,9 @@ RUN apt-get update && apt-get install -y \
   lsof \
   && rm -rf /var/lib/apt/lists/*
 
+# Install uv
+RUN curl -LsSf https://astral.sh/uv/install.sh | UV_INSTALL_DIR=/usr/local/bin sh
+
 # BUN
 RUN curl -fsSL https://bun.sh/install | bash \
   && mv /root/.bun/bin/bun /usr/local/bin/bun
@@ -33,6 +36,9 @@ RUN groupmod -g $AGENT_GID --non-unique node && usermod -u $AGENT_UID -g $AGENT_
 
 # Install pi coding agent (run as root before USER agent)
 RUN npm install -g @mariozechner/pi-coding-agent
+
+RUN pi install npm:pi-headroom
+RUN pi install npm:@howaboua/pi-vent
 
 USER ${AGENT_UID}:${AGENT_GID}
 
