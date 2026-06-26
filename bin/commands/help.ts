@@ -9,14 +9,13 @@ Usage:
   anvil help             Show this help
 
 Available workflows:
-  test    Interactive pi session using the Pi SDK
+  interactive    Continuous interactive Pi session with readline
 
 Options:
   help    Show this help message
 
 Example:
   anvil
-  anvil run test
-  anvil run test "Review my code"
+  anvil run interactive
     `);
 }

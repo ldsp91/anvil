@@ -6,11 +6,24 @@ import {
   createAgentSession,
 } from "@earendil-works/pi-coding-agent";
 
-export const testWorkflow: Workflow = {
-  id: "test",
-  name: "Test",
-  description: "Interactive pi session using the Pi SDK",
-  async run(prompt) {
+function createReadline(): Promise<string> {
+  return new Promise((resolve) => {
+    const rl = require("readline").createInterface({
+      input: process.stdin,
+      output: process.stdout,
+    });
+    rl.question("", (answer: string) => {
+      rl.close();
+      resolve(answer);
+    });
+  });
+}
+
+export const interactiveWorkflow: Workflow = {
+  id: "interactive",
+  name: "Interactive",
+  description: "Continuous interactive Pi session with readline",
+  async run() {
     const authStorage = AuthStorage.create();
     const modelRegistry = ModelRegistry.create(authStorage);
 
@@ -36,7 +49,24 @@ export const testWorkflow: Workflow = {
       }
     });
 
-    await session.prompt(prompt ?? "");
-    session.dispose();
+    console.log("Pi Interactive Session (type 'exit' to quit)\n");
+
+    try {
+      while (true) {
+        const input = await createReadline();
+
+        if (input.trim().toLowerCase() === "exit") {
+          console.log("\nGoodbye!");
+          break;
+        }
+
+        if (!input.trim()) continue;
+
+        await session.prompt(input);
+        console.log();
+      }
+    } finally {
+      session.dispose();
+    }
   },
 };
