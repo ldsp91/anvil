@@ -1,7 +1,35 @@
 #!/usr/bin/env bun
 
-import { run, pi } from "@ai-hero/sandcastle";
-import { noSandbox } from "@ai-hero/sandcastle/sandboxes/no-sandbox";
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
+
+import { pi, run } from '@ai-hero/sandcastle';
+import { noSandbox } from '@ai-hero/sandcastle/sandboxes/no-sandbox';
+
+interface AnvilConfig {
+  model?: string;
+  maxIterations?: number;
+}
+
+function loadConfig(): AnvilConfig {
+  const configPath = resolve(process.cwd(), "anvil.json");
+
+  let raw: string;
+  try {
+    raw = readFileSync(configPath, "utf-8");
+  } catch (err: any) {
+    if (err.code === "ENOENT") {
+      console.error(`Error: no anvil.json found in ${process.cwd()}`);
+      console.error(
+        "Create an anvil.json file in your project root to get started.",
+      );
+      process.exit(1);
+    }
+    throw err;
+  }
+
+  return JSON.parse(raw) as AnvilConfig;
+}
 
 async function main() {
   const args = process.argv.slice(2);
@@ -21,13 +49,6 @@ Example:
     `);
     return;
   }
-
-  const result = await run({
-    agent: pi("claude-sonnet-4-6"),
-    sandbox: noSandbox(),
-    prompt: args[0],
-    maxIterations: 5,
-  });
 
   console.log(`\nCompleted in ${result.iterations.length} iterations`);
   console.log(`Branch: ${result.branch}`);
