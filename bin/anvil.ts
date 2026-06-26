@@ -50,6 +50,9 @@ Example:
     return;
   }
 
+  const config = loadConfig();
+  const prompt = args[0];
+
   console.log(`\nCompleted in ${result.iterations.length} iterations`);
   console.log(`Branch: ${result.branch}`);
 }
