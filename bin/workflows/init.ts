@@ -56,7 +56,7 @@ export const initWorkflow: Workflow = {
     const mode = new InteractiveMode(runtime, {
       migratedProviders: [],
       modelFallbackMessage: undefined,
-      initialMessage: undefined,
+      initialMessage: "/skill:1-init-grill",
       initialImages: [],
       initialMessages: [],
     });
