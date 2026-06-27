@@ -1,13 +1,17 @@
 #!/usr/bin/env bun
 
 import inquirer from 'inquirer';
-
+import { resolve, dirname } from 'path';
+import { fileURLToPath } from 'url';
 import { help } from './commands/help.js';
 import { init } from './commands/init.js';
 import { interactive } from './commands/interactive.js';
 import { run } from './commands/run.js';
 import { transcript } from './commands/transcript.js';
 import { listWorkflows } from './workflows/registry.js';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const rootDir = resolve(__dirname, '..');
 
 const args = process.argv.slice(2);
 
@@ -24,7 +28,10 @@ if (args.length === 0) {
 
   const selected = listWorkflows().find((w) => w.id === workflow);
   if (selected) {
-    await selected.run();
+    const skillPaths = (selected.skills ?? []).map((name) =>
+      resolve(rootDir, 'skills', name)
+    );
+    await selected.run(undefined, { skillPaths });
   }
 } else if (args[0] === "help") {
   help();
