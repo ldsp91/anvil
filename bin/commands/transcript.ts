@@ -1,5 +1,6 @@
 import { existsSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
+import { status, info, running, error, divider, color } from "../styles.js";
 
 interface SessionEntry {
   type: string;
@@ -110,13 +111,26 @@ export async function transcript(customDir?: string): Promise<void> {
   const targetDir = customDir || resolve(process.cwd(), "docs", "transcripts");
 
   if (!existsSync(sessionsPath)) {
-    console.log("No .sessions directory found.");
+    console.log(info("No .sessions directory found. Run a workflow first to generate sessions."));
     process.exit(0);
   }
 
   const sessionFiles = readdirSync(sessionsPath)
     .filter((f) => f.endsWith(".jsonl"))
     .sort();
+
+  if (sessionFiles.length === 0) {
+    console.log(info("No session files found. Run a workflow first to generate sessions."));
+    process.exit(0);
+  }
+
+  if (!existsSync(targetDir)) {
+    mkdirSync(targetDir, { recursive: true });
+    console.log(status(`Created ${color(targetDir, "magenta")}`));
+  }
+
+  console.log(running(`Processing ${color(String(sessionFiles.length), "cyan")} session file(s)...`));
+  console.log("");
 
   let created = 0;
   let skipped = 0;
@@ -141,13 +155,19 @@ export async function transcript(customDir?: string): Promise<void> {
       writeFileSync(transcriptFile, JSON.stringify(transcript, null, 2), "utf-8");
       created++;
     } catch (err) {
-      console.error(`Error processing ${fileName}: ${err}`);
+      console.error(error(`Error processing ${color(fileName, "yellow")}: ${err}`));
     }
   }
 
-  if (!existsSync(targetDir)) {
-    console.log(`Created ${targetDir}`);
+  console.log("");
+  if (created > 0) {
+    console.log(status(`Created ${color(String(created), "cyan")} transcript(s)`));
   }
-
-  console.log(`Created ${created} transcript(s), skipped ${skipped} (already exists or empty)`);
+  if (skipped > 0) {
+    console.log(info(`Skipped ${color(String(skipped), "yellow")} (already exists or empty)`));
+  }
+  if (created === 0 && skipped === 0) {
+    console.log(info("No new transcripts to generate."));
+  }
+  console.log("");
 }
