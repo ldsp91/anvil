@@ -41,7 +41,7 @@ anvil help             Show help message
 | ID | Name | Description |
 |---|---|---|
 | `interactive` | Interactive | Full Pi terminal UI with editor and chat |
-| `init` | Init | X-step initialization process to define your project |
+| `init` | Init | 4-step initialization process to define your project |
 
 ### Initialization Workflow
 
@@ -61,7 +61,7 @@ Run `anvil run init` repeatedly — it always picks up where you left off.
 | **1** | `1-init-grill` | YC Office Hours interrogation — nail down the core idea, problem, user, and wedge | `docs/PROJECT_BRIEF.md` |
 | **2** | `2-prd` | Turn the validated brief into a structured PRD with features, user stories, scope, and success metrics | `docs/PRD.md` |
 | **3** | `3-architecture` | Comprehensive architecture design — system, data, API, security, infra, frontend, backend, performance, scalability, reliability, testing, integrations, observability | `docs/ARCHITECTURE.md` |
-| **4** | *(future)* | Task breakdown & implementation planning | `docs/TASKS.md` |
+| **4** | `4-bootstrap` | Read the architecture and plan the first implementation issues — repository structure, tooling, CI, dev environment, and scaffold (final step) | `docs/BOOTSTRAP_PLAN.md` |
 
 ### Examples
 

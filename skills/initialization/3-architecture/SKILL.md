@@ -4,7 +4,7 @@ description: |
   Comprehensive architecture design session. Reads docs/PRD.md, then interrogates
   the user on every architectural dimension — system, data, API, security, infra,
   frontend, backend, performance, scalability, reliability, testing, integrations,
-  observability, and more. Writes docs/ARCHITECTURE.md.
+  observability, local dev, repository structure, and cost. Writes docs/ARCHITECTURE.md.
 ---
 
 # Architecture Design — Interrogation
@@ -43,6 +43,8 @@ If `docs/PRD.md` does not exist, stop and tell the user to run the init-grill an
 ## Phase 2: Interrogate Architecture Dimensions
 
 Go through these phases **ONE AT A TIME** in conversation. For each, ask targeted questions. Push until the answer is concrete and defensible.
+
+> **Overlap note:** Several topics appear across multiple phases (e.g., rate limiting in Security, API, and Backend; CORS in Security, API, and Backend; CDN in Infra and Performance; health checks in Backend, Reliability, and Observability; backup in Data, Infra, and Reliability; monitoring in Infra and Observability; alerting in Infra and Observability). When you encounter a topic already discussed, **deepen** the conversation rather than repeating — ask for specifics, edge cases, or tradeoffs that the earlier phase didn't cover.
 
 ---
 
@@ -120,6 +122,13 @@ Probe for each layer:
 - **Linting / formatting:** ESLint, Prettier, Biome, Ruff, or custom?
 - **Git workflow:** trunk-based, gitflow, GitHub flow?
 - **Environment management:** Docker Compose for local dev? .env files? dotenv?
+
+#### Repository Structure
+- **Repo strategy:** Monorepo (pnpm workspaces, Turborepo, Nx, Lerna) or polyrepo?
+- **Why that strategy:** Shared dependencies? Atomic changes? Independent versioning? Team structure?
+- **Package boundaries:** What's in the shared packages? What's in individual packages?
+- **Version management:** Single version for all? Independent versioning per package?
+- **Build orchestration:** How are builds coordinated? Turbo? Nx? Custom scripts?
 
 **Push until you hear:**
 - A defensible choice for each technology
@@ -414,6 +423,16 @@ Probe for:
 - **Disaster recovery:** Backup strategy? Failover? RTO/RPO targets?
 - **Infrastructure as Code:** Terraform, Pulumi, CDK, or managed console?
 
+#### Cost / FinOps
+- **Monthly budget:** What's the target monthly infrastructure budget? Hard cap or guideline?
+- **Cost tracking:** How is cost monitored? Native cloud dashboards? Third-party tools (CloudHealth, Cloudability, Cost Explorer)?
+- **Cost per unit:** Is there a cost-per-user or cost-per-operation target? What's the economics?
+- **Reserved capacity vs on-demand:** Reserved instances? Savings plans? Spot instances? When does it make sense?
+- **Budget alerts:** At what threshold do you get notified? 50%? 80%? 100%?
+- **Cost review cadence:** Who reviews costs? How often? Weekly? Monthly?
+- **Shutdown policy:** What happens to non-production environments on weekends/holidays? Auto-shutdown?
+- **Vendor negotiation:** Are there volume discounts? Startup credits? Annual commitments?
+
 **Push until you hear:**
 - A deployment strategy that matches the team's operational capacity
 - Monitoring and alerting appropriate to the product's criticality
@@ -579,10 +598,10 @@ Probe for each integration:
 - **In-app chat:** Intercom, Crisp, custom?
 
 #### CI/CD
-- **CI/CD platform:** (covered in Phase J)
+- **CI/CD platform:** (covered in Phase I — confirm integration details)
 
 #### Monitoring
-- **Monitoring platform:** (covered in Phase J)
+- **Monitoring platform:** (covered in Phase I — confirm integration details)
 
 **For each integration, probe:**
 - **Fallback strategy:** What happens if the third-party service goes down?
@@ -654,6 +673,39 @@ Probe for:
 
 ---
 
+### Phase P: Local Development Experience
+
+**Goal:** Design the developer experience for working on this project locally.
+
+**Ask:** "Let's talk about developer experience. How will developers work on this project day-to-day?"
+
+Probe for:
+
+- **Local environment setup:** How does a new developer get the project running? Docker Compose? Dev containers? Manual setup?
+- **Dev server configuration:** Hot reload? Fast refresh? What dev tooling is used?
+- **Database for local dev:** Does local dev use a real database or a mock? How is it seeded?
+- **Mocking external services:** How are third-party APIs mocked locally? WireMock? MSW? Custom mocks?
+- **Seed data / fixtures:** What seed data is available for local development? How is it maintained?
+- **Database reset:** How do you reset the local database? One command? Script?
+- **Environment variables:** How are .env files managed? .env.example? Docker Compose env files?
+- **Shared dev infrastructure:** Do multiple developers share resources? Shared databases? Shared queues?
+- **Cross-service development:** If microservices, how are services developed together? Local service mesh? Mocked dependencies?
+- **IDE configuration:** Recommended editors? Extensions? LSP configuration?
+- **Onboarding time:** How long should it take a new developer to get the project running? What's the target?
+
+**Push until you hear:**
+- A clear path from clone to running locally
+- Realistic expectations for onboarding time
+- Recognition that local dev experience directly impacts team velocity
+
+**Red flags:**
+- "Just follow the README" (READMEs are always outdated)
+- No seed data strategy
+- No local mocking strategy for external services
+- Manual setup steps that take more than 30 minutes
+
+---
+
 ## Phase 3: Synthesize & Review
 
 Once all phases are complete, synthesize everything into a structured architecture document.
@@ -688,20 +740,24 @@ Write the complete architecture to `docs/ARCHITECTURE.md`:
 
 1. [System Architecture](#system-architecture)
 2. [Tech Stack](#tech-stack)
-3. [Data Architecture](#data-architecture)
-4. [API Architecture](#api-architecture)
-5. [Authentication & Authorization](#authentication--authorization)
-6. [Security Architecture](#security-architecture)
-7. [Frontend Architecture](#frontend-architecture)
-8. [Backend Architecture](#backend-architecture)
-9. [Infrastructure & Deployment](#infrastructure--deployment)
-10. [Performance Architecture](#performance-architecture)
-11. [Scalability Architecture](#scalability-architecture)
-12. [Reliability & Availability](#reliability--availability)
-13. [Third-Party Integrations](#third-party-integrations)
-14. [Testing Architecture](#testing-architecture)
-15. [Observability Architecture](#observability-architecture)
-16. [Open Questions](#open-questions)
+3. [Repository Structure](#repository-structure)
+4. [Data Architecture](#data-architecture)
+5. [API Architecture](#api-architecture)
+6. [Authentication & Authorization](#authentication--authorization)
+7. [Security Architecture](#security-architecture)
+8. [Frontend Architecture](#frontend-architecture)
+9. [Backend Architecture](#backend-architecture)
+10. [Infrastructure & Deployment](#infrastructure--deployment)
+11. [Local Development Experience](#local-development-experience)
+12. [Cost / FinOps](#cost--finops)
+13. [Performance Architecture](#performance-architecture)
+14. [Scalability Architecture](#scalability-architecture)
+15. [Reliability & Availability](#reliability--availability)
+16. [Third-Party Integrations](#third-party-integrations)
+17. [Testing Architecture](#testing-architecture)
+18. [Observability Architecture](#observability-architecture)
+19. [Architecture Decision Records](#architecture-decision-records)
+20. [Open Questions](#open-questions)
 
 ---
 
@@ -753,6 +809,22 @@ Write the complete architecture to `docs/ARCHITECTURE.md`:
 | Hosting | | |
 | CI/CD | | |
 | Containerization | | |
+
+---
+
+## Repository Structure
+
+### Repo Strategy
+[Monorepo vs polyrepo, workspace tool]
+
+### Package Boundaries
+[Shared packages, individual package boundaries]
+
+### Version Management
+[Single version vs independent versioning]
+
+### Build Orchestration
+[How builds are coordinated across packages]
 
 ---
 
@@ -901,6 +973,41 @@ Write the complete architecture to `docs/ARCHITECTURE.md`:
 
 ---
 
+## Local Development Experience
+
+### Environment Setup
+[Docker Compose, dev containers, manual setup]
+
+### Database
+[Local database strategy, seeding, reset]
+
+### External Service Mocking
+[How third-party APIs are mocked locally]
+
+### Onboarding
+[Target onboarding time, setup steps]
+
+---
+
+## Cost / FinOps
+
+### Budget
+[Monthly budget, hard caps]
+
+### Cost Tracking
+[How cost is monitored, tools used]
+
+### Cost Per Unit
+[Cost-per-user or cost-per-operation targets]
+
+### Reserved vs On-Demand
+[Reserved instances, savings plans, spot instances]
+
+### Cost Governance
+[Budget alerts, review cadence, shutdown policy]
+
+---
+
 ## Performance Architecture
 
 ### Performance Targets
@@ -989,6 +1096,28 @@ Write the complete architecture to `docs/ARCHITECTURE.md`:
 
 ---
 
+## Architecture Decision Records
+
+Record significant decisions that may need to be revisited. Each ADR should be a single paragraph capturing:
+
+- **Context:** What was the situation when the decision was made?
+- **Decision:** What was decided?
+- **Consequences:** What are the tradeoffs? What did we gain? What did we give up?
+
+Format:
+
+### ADR-001: [Decision Title]
+
+**Status:** Accepted | Proposed | Deprecated | Superseded
+
+**Context:** [description]
+
+**Decision:** [description]
+
+**Consequences:** [tradeoffs]
+
+---
+
 ## Open Questions
 
 - [Unresolved architectural decisions]
@@ -1048,3 +1177,7 @@ If the user expresses impatience ("just write it," "skip the questions"):
 4. **Start simple.** When in doubt, recommend the simplest solution that could work. Complexity should be earned through evidence of need.
 
 5. **Document decisions.** The architecture document should capture *why* decisions were made, not just *what* was decided. Future you will thank present you.
+
+6. **Consider Architecture Decision Records (ADRs).** For significant decisions that may need to be revisited, write lightweight ADRs (one paragraph each) capturing context, decision, and consequences. The architecture document is comprehensive; ADRs are quick to write and easy to find.
+
+7. **Local dev experience is part of architecture.** A project with great architecture but terrible local dev setup will move slowly. The path from clone to running locally should be fast, documented, and repeatable.

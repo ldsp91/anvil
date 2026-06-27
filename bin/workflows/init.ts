@@ -25,8 +25,11 @@ function getInitStep(): number {
   if (!existsSync(resolve(process.cwd(), "docs", "ARCHITECTURE.md"))) {
     return 3;
   }
-  // Add more conditions here for future steps
-  return 4;
+  if (!existsSync(resolve(process.cwd(), "docs", "BOOTSTRAP_PLAN.md"))) {
+    return 4;
+  }
+  // This is the last step — the bootstrap is complete
+  return 5;
 }
 
 /**
@@ -82,8 +85,11 @@ async function runInitStep(
     case 3:
       initialMessage = "/skill:3-architecture";
       break;
+    case 4:
+      initialMessage = "/skill:4-bootstrap";
+      break;
     default:
-      console.log(`No init step ${step} defined yet.`);
+      console.log(`Bootstrap is the final init step. No step ${step} defined.`);
       return;
   }
 
@@ -103,8 +109,8 @@ async function runInitStep(
 export const initWorkflow: Workflow = {
   id: "init",
   name: "Init",
-  description: "X-step initialization process to define your project",
-  skills: ["initialization/1-init-grill", "initialization/2-prd", "initialization/3-architecture"],
+  description: "4-step initialization process to define your project",
+  skills: ["initialization/1-init-grill", "initialization/2-prd", "initialization/3-architecture", "initialization/4-bootstrap"],
   async run(_prompt, options: WorkflowRunOptions) {
     const skillPaths = options?.skillPaths ?? [];
     const sessionDir = resolve(process.cwd(), SESSION_DIR);
