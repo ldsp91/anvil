@@ -17,17 +17,14 @@ const rootDir = resolve(__dirname, '..');
 const args = process.argv.slice(2);
 
 if (args.length === 0) {
-  const all = listWorkflows();
-  const initDone = isWorkflowAllowed("placeholder");
+  const available = listWorkflows().filter((w) => isWorkflowAllowed(w.id));
 
-  const choices = [...all]
+  const choices = [...available]
     .sort((a, b) => (a.id === "interactive" ? 1 : -1))
-    .map((w) => {
-      const label = !initDone && !isWorkflowAllowed(w.id)
-        ? `${w.name} — ${w.description} (requires init)`
-        : `${w.name} — ${w.description}`;
-      return { name: label, value: w.id };
-    });
+    .map((w) => ({
+      name: `${w.name} — ${w.description}`,
+      value: w.id,
+    }));
 
   const { workflow } = await inquirer.prompt({
     name: "workflow",
