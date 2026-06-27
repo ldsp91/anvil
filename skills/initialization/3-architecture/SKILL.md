@@ -1,10 +1,11 @@
 ---
 name: 3-architecture
 description: |
-  Comprehensive architecture design session. Reads docs/PRD.md, then interrogates
-  the user on every architectural dimension — system, data, API, security, infra,
-  frontend, backend, performance, scalability, reliability, testing, integrations,
-  observability, local dev, repository structure, and cost. Writes docs/ARCHITECTURE.md.
+  Comprehensive architecture design session. Reads docs/agents/domain.md,
+  CONTEXT.md, docs/adr/, then docs/PRD.md, then interrogates the user on every
+  architectural dimension — system, data, API, security, infra, frontend, backend,
+  performance, scalability, reliability, testing, integrations, observability,
+  local dev, repository structure, and cost. Writes docs/ARCHITECTURE.md.
 ---
 
 # Architecture Design — Interrogation
@@ -22,7 +23,23 @@ If the user asks about implementation details, redirect: "Let's nail down the ar
 
 ---
 
-## Phase 1: Load the PRD
+## Phase 1: Load the Domain Context
+
+Before reading the PRD or making any architectural decisions, check for domain documentation that defines the project's vocabulary and decision context.
+
+1. **Read `docs/agents/domain.md`** — this tells you how domain docs are structured and how you should consume them. If it doesn't exist, proceed to Phase 2 silently.
+
+2. **If `docs/agents/domain.md` exists**, follow its instructions:
+   - Read **`CONTEXT.md`** at the repo root (or `CONTEXT-MAP.md` if it exists — it points at one `CONTEXT.md` per context; read each one relevant to the topic)
+   - Read any **`docs/adr/`** ADRs that touch the areas you'll be designing
+   - Use the **glossary's vocabulary** from `CONTEXT.md` when discussing architecture — don't drift to synonyms the glossary explicitly avoids
+   - If your proposed architecture contradicts an existing ADR, surface it explicitly rather than silently overriding
+
+> If any of these files don't exist, **proceed silently**. Don't flag their absence; don't suggest creating them upfront. The producer skill (`/grill-with-docs`) creates them lazily when terms or decisions actually get resolved.
+
+---
+
+## Phase 2: Load the PRD
 
 Read `docs/PRD.md` and acknowledge what you've found.
 
@@ -40,7 +57,7 @@ If `docs/PRD.md` does not exist, stop and tell the user to run the init-grill an
 
 ---
 
-## Phase 2: Interrogate Architecture Dimensions
+## Phase 3: Interrogate Architecture Dimensions
 
 Go through these phases **ONE AT A TIME** in conversation. For each, ask targeted questions. Push until the answer is concrete and defensible.
 
@@ -706,7 +723,7 @@ Probe for:
 
 ---
 
-## Phase 3: Synthesize & Review
+## Phase 4: Synthesize & Review
 
 Once all phases are complete, synthesize everything into a structured architecture document.
 
@@ -725,7 +742,7 @@ Wait for confirmation. If the user disagrees with anything, revise and re-review
 
 ---
 
-## Phase 4: Write the Architecture Document
+## Phase 5: Write the Architecture Document
 
 Write the complete architecture to `docs/ARCHITECTURE.md`:
 
@@ -1150,8 +1167,9 @@ Write the file to `docs/ARCHITECTURE.md` and tell the user where it was saved.
 ## Smart-Skip Rules
 
 - If the PRD already specifies a tech stack → validate rather than re-interrogate
+- If domain docs (`CONTEXT.md`, `docs/adr/`) exist and constrain the architecture → respect them over defaults
 - If the user provides a detailed architecture diagram → use it as a foundation and fill gaps
-- If the user says "just write it" → synthesize from the PRD alone and flag all assumptions
+- If the user says "just write it" → synthesize from the PRD and domain docs alone and flag all assumptions
 - If the PRD is very detailed → use it as a strong foundation and focus on gaps
 
 ---
@@ -1181,3 +1199,5 @@ If the user expresses impatience ("just write it," "skip the questions"):
 6. **Consider Architecture Decision Records (ADRs).** For significant decisions that may need to be revisited, write lightweight ADRs (one paragraph each) capturing context, decision, and consequences. The architecture document is comprehensive; ADRs are quick to write and easy to find.
 
 7. **Local dev experience is part of architecture.** A project with great architecture but terrible local dev setup will move slowly. The path from clone to running locally should be fast, documented, and repeatable.
+
+8. **Respect domain vocabulary.** If `CONTEXT.md` exists, use its glossary terms consistently throughout the architecture document. If existing ADRs constrain decisions, acknowledge them and explain any departures. The architecture should be coherent with the project's established domain language and prior decisions.

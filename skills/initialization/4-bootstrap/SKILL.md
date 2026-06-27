@@ -1,9 +1,10 @@
 ---
 name: 4-bootstrap
 description: |
-  Reads docs/ARCHITECTURE.md, then plans the first set of implementation issues
-  that scaffold the project — repository structure, tooling, CI, dev environment,
-  and the minimal viable codebase layout. Outputs docs/BOOTSTRAP_PLAN.md.
+  Reads docs/agents/domain.md, CONTEXT.md, docs/adr/, and docs/ARCHITECTURE.md,
+  then plans the first set of implementation issues that scaffold the project —
+  repository structure, tooling, CI, dev environment, and the minimal viable
+  codebase layout. Outputs docs/BOOTSTRAP_PLAN.md.
 ---
 
 # Bootstrap — Implementation Planning
@@ -18,6 +19,22 @@ You are a **senior engineering lead**. Your job is to take the architecture docu
 - ❌ **Out of scope:** Feature implementation, business logic, actual code writing, deployment to production, operational runbooks
 
 If the user asks about implementing features or writing code, redirect: "Let's plan the bootstrap first. Once we have the scaffold, we'll tackle implementation issue by issue."
+
+---
+
+## Phase 0: Load the Domain Context
+
+Before reading the architecture, check for domain documentation that defines the project's vocabulary and decision context.
+
+1. **Read `docs/agents/domain.md`** — this tells you how domain docs are structured and how you should consume them. If it doesn't exist, proceed to Phase 1 silently.
+
+2. **If `docs/agents/domain.md` exists**, follow its instructions:
+   - Read **`CONTEXT.md`** at the repo root (or `CONTEXT-MAP.md` if it exists — it points at one `CONTEXT.md` per context; read each one relevant to the topic)
+   - Read any **`docs/adr/`** ADRs that touch the areas you'll be scaffolding
+   - Use the **glossary's vocabulary** from `CONTEXT.md` when naming things in your plan — don't drift to synonyms the glossary explicitly avoids
+   - If your plan contradicts an existing ADR, surface it explicitly rather than silently overriding
+
+> If any of these files don't exist, **proceed silently**. Don't flag their absence; don't suggest creating them upfront. The producer skill (`/grill-with-docs`) creates them lazily when terms or decisions actually get resolved.
 
 ---
 
@@ -311,7 +328,8 @@ Write the file to `docs/BOOTSTRAP_PLAN.md` and tell the user where it was saved.
 
 - If the architecture already specifies a repo structure → use it directly, don't redesign
 - If the architecture already specifies tooling → validate rather than re-choose
-- If the user says "just write it" → synthesize from the architecture alone and flag assumptions
+- If domain docs (`CONTEXT.md`, `docs/adr/`) exist and constrain the scaffold → respect them over defaults
+- If the user says "just write it" → synthesize from the architecture and domain docs alone and flag assumptions
 - If the architecture is very detailed → use it as a strong foundation and focus on gaps
 
 ---
@@ -332,7 +350,7 @@ If the user expresses impatience ("just write it," "skip the questions"):
 
 2. **Dependencies matter.** Issue ordering is critical. You can't test before you install the test framework. You can't build before you configure the build tool.
 
-3. **Reference the architecture.** Every issue should explicitly reference decisions from ARCHITECTURE.md. The bootstrap is the implementation of the architecture — they must align.
+3. **Reference the architecture and domain docs.** Every issue should explicitly reference decisions from `ARCHITECTURE.md` and use terminology from `CONTEXT.md` (if present). The bootstrap is the implementation of the architecture — they must align. If domain ADRs are relevant to the scaffold, reference them too.
 
 4. **Keep it minimal.** The bootstrap should be the absolute minimum needed to start building features. Don't over-engineer the scaffold. You can always add tooling later.
 
