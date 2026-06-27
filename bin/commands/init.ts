@@ -13,6 +13,8 @@ const DOCKERFILE = resolve(__dirname, "../..", "Dockerfile");
 const CONFIG_PATH = resolve(process.cwd(), "anvil.json");
 const GITIGNORE_PATH = resolve(process.cwd(), ".gitignore");
 const SESSIONS_DIR = ".sessions";
+const DOCS_AGENTS_SRC = resolve(rootDir, "..", "docs", "agents");
+const DOCS_AGENTS_DST = resolve(process.cwd(), "docs", "agents");
 
 const DEFAULT_CONFIG = JSON.stringify(
   {
@@ -107,6 +109,12 @@ export async function init(): Promise<void> {
   if (!existsSync(docsTranscriptsPath)) {
     mkdirSync(docsTranscriptsPath, { recursive: true });
     console.log(status(`Created ${color(docsTranscriptsPath, "magenta")}`));
+  }
+
+  // Copy docs/agents/ from anvil package if not already present
+  if (existsSync(DOCS_AGENTS_SRC) && !existsSync(DOCS_AGENTS_DST)) {
+    copyDirSync(DOCS_AGENTS_SRC, DOCS_AGENTS_DST);
+    console.log(status(`Copied ${color("docs/agents/", "magenta")} from anvil package`));
   }
 
   // Add .sessions to .gitignore if not already present
