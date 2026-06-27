@@ -1,7 +1,10 @@
-import { copyFileSync, existsSync, mkdirSync, readdirSync, readFileSync, rmSync, statSync, writeFileSync } from "node:fs";
-import { resolve } from "node:path";
-import { fileURLToPath } from "node:url";
-import { status, running, divider, color, BANNER, TAGLINE } from "../styles.js";
+import {
+    copyFileSync, existsSync, mkdirSync, readdirSync, readFileSync, rmSync, statSync, writeFileSync
+} from 'node:fs';
+import { resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+import { color, divider, running, status, TAGLINE } from '../styles.js';
 
 const __dirname = resolve(fileURLToPath(import.meta.url), "..");
 const rootDir = resolve(__dirname, "..");
@@ -13,7 +16,8 @@ const SESSIONS_DIR = ".sessions";
 
 const DEFAULT_CONFIG = JSON.stringify(
   {
-    $schema: "https://raw.githubusercontent.com/ldsp91/anvil/main/anvil.schema.json",
+    $schema:
+      "https://raw.githubusercontent.com/ldsp91/anvil/main/anvil.schema.json",
     model: "claude-sonnet-4-6",
     maxIterations: 5,
   },
@@ -59,8 +63,9 @@ async function cloneAndCopySkills(): Promise<void> {
     mkdirSync(SKILLS_DIR, { recursive: true });
   }
 
-  const skillDirs = readdirSync(skillsSrc)
-    .filter((d) => statSync(resolve(skillsSrc, d)).isDirectory());
+  const skillDirs = readdirSync(skillsSrc).filter((d) =>
+    statSync(resolve(skillsSrc, d)).isDirectory(),
+  );
 
   for (const skillName of skillDirs) {
     const src = resolve(skillsSrc, skillName);
@@ -79,8 +84,6 @@ async function cloneAndCopySkills(): Promise<void> {
 export async function init(): Promise<void> {
   const folderName = process.cwd().split("/").pop()!;
 
-  // Show banner
-  process.stdout.write(BANNER);
   console.log(TAGLINE);
   console.log("");
   console.log(running(`Initializing project: ${color(folderName, "cyan")}`));
@@ -112,7 +115,11 @@ export async function init(): Promise<void> {
   }
   const gitignoreContent = readFileSync(GITIGNORE_PATH, "utf-8");
   if (!gitignoreContent.includes(SESSIONS_DIR)) {
-    writeFileSync(GITIGNORE_PATH, gitignoreContent + `\n${SESSIONS_DIR}\n`, "utf-8");
+    writeFileSync(
+      GITIGNORE_PATH,
+      gitignoreContent + `\n${SESSIONS_DIR}\n`,
+      "utf-8",
+    );
     console.log(status(`Added ${color(SESSIONS_DIR, "yellow")} to .gitignore`));
   }
 
@@ -122,12 +129,15 @@ export async function init(): Promise<void> {
 
   console.log("");
   try {
-    Bun.spawnSync(
-      ["docker", "image", "inspect", `sandcastle:${folderName}`],
-      { stdio: ["ignore"] },
-    );
+    Bun.spawnSync(["docker", "image", "inspect", `sandcastle:${folderName}`], {
+      stdio: ["ignore"],
+    });
 
-    console.log(running(`Removing old Docker image ${color(`sandcastle:${folderName}`, "yellow")}`));
+    console.log(
+      running(
+        `Removing old Docker image ${color(`sandcastle:${folderName}`, "yellow")}`,
+      ),
+    );
 
     Bun.spawnSync(
       [
@@ -142,11 +152,15 @@ export async function init(): Promise<void> {
       stdio: ["inherit"],
     });
   } catch {
-    console.log(`  ℹ  Docker image ${color(`sandcastle:${folderName}`, "yellow")} doesn't exist yet... Proceeding`);
+    console.log(
+      `  ℹ  Docker image ${color(`sandcastle:${folderName}`, "yellow")} doesn't exist yet... Proceeding`,
+    );
   }
 
   console.log("");
-  console.log(running(`Building Docker image from ${color("Dockerfile", "magenta")}...`));
+  console.log(
+    running(`Building Docker image from ${color("Dockerfile", "magenta")}...`),
+  );
   console.log("");
 
   Bun.spawnSync(

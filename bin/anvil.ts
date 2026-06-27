@@ -1,28 +1,29 @@
 #!/usr/bin/env bun
 
 import inquirer from 'inquirer';
-import { resolve, dirname } from 'path';
+import { dirname, resolve } from 'path';
 import { fileURLToPath } from 'url';
+
 import { help } from './commands/help.js';
 import { init } from './commands/init.js';
 import { interactive } from './commands/interactive.js';
 import { run } from './commands/run.js';
 import { transcript } from './commands/transcript.js';
-import { listWorkflows, findWorkflow } from './workflows/registry.js';
+import { color, divider, error, running, status, TAGLINE, workflowCard } from './styles.js';
 import { isWorkflowAllowed } from './workflows/init-check.js';
-import { BANNER, TAGLINE, workflowCard, divider, status, running, error, color } from './styles.js';
+import { findWorkflow, listWorkflows } from './workflows/registry.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const rootDir = resolve(__dirname, '..');
+const rootDir = resolve(__dirname, "..");
 
 const args = process.argv.slice(2);
 
 if (args.length === 0) {
   const available = listWorkflows().filter((w) => isWorkflowAllowed(w.id));
-  const sorted = [...available].sort((a, b) => (a.id === "interactive" ? 1 : -1));
+  const sorted = [...available].sort((a, b) =>
+    a.id === "interactive" ? 1 : -1,
+  );
 
-  // Show banner
-  process.stdout.write(BANNER);
   console.log(TAGLINE);
   console.log("");
 
@@ -33,7 +34,9 @@ if (args.length === 0) {
 
   sorted.forEach((w, i) => {
     const locked = !initDone && !isWorkflowAllowed(w.id);
-    console.log(workflowCard(i, w.name, w.description, locked, i === sorted.length - 1));
+    console.log(
+      workflowCard(i, w.name, w.description, locked, i === sorted.length - 1),
+    );
     if (i < sorted.length - 1) console.log("");
   });
 
@@ -53,9 +56,11 @@ if (args.length === 0) {
 
   const selected = findWorkflow(workflow);
   if (selected) {
-    console.log(`\n${running(`Launching ${color(selected.name, "cyan")}...`)}\n`);
+    console.log(
+      `\n${running(`Launching ${color(selected.name, "cyan")}...`)}\n`,
+    );
     const skillPaths = (selected.skills ?? []).map((name) =>
-      resolve(rootDir, 'skills', name)
+      resolve(rootDir, "skills", name),
     );
     await selected.run(undefined, { skillPaths });
   }
