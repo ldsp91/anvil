@@ -1,7 +1,8 @@
 import { Workflow } from "./types.js";
 import { interactiveWorkflow } from "./interactive.js";
+import { initWorkflow } from "./init.js";
 
-export const workflows: Workflow[] = [interactiveWorkflow];
+export const workflows: Workflow[] = [interactiveWorkflow, initWorkflow];
 
 export function findWorkflow(id: string): Workflow | undefined {
   return workflows.find((w) => w.id === id);

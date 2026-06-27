@@ -41,6 +41,18 @@ anvil help             Show help message
 | ID | Name | Description |
 |---|---|---|
 | `interactive` | Interactive | Full Pi terminal UI with editor and chat |
+| `init` | Init | X-step initialization process to define your project |
+
+### Initialization Workflow
+
+The `init` workflow guides you through a structured initialization process that creates markdown files to define what your project is about. It starts with the **init-grill** step — a YC Office Hours-style interrogation that surfaces your core idea before any implementation begins.
+
+```bash
+# Run the initialization workflow
+anvil run init
+```
+
+Each step in the initialization process produces a markdown file in `docs/`, building up a complete project definition over multiple steps. The first step, **1-init-grill**, uses the YC Product Diagnostic framework to force clarity on your problem, user, and value proposition before any code is written.
 
 ### Examples
 
@@ -50,6 +62,9 @@ anvil
 
 # Run the interactive workflow directly
 anvil run interactive
+
+# Run the initialization workflow
+anvil run init
 
 # Initialize a new project
 anvil init
