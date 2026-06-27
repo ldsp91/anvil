@@ -1,1 +1,2 @@
-NEVER run the binary!
+- NEVER run the binary!
+- Always read the README.md to get an understanding of the project.
