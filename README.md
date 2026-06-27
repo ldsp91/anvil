@@ -45,14 +45,23 @@ anvil help             Show help message
 
 ### Initialization Workflow
 
-The `init` workflow guides you through a structured initialization process that creates markdown files to define what your project is about. It starts with the **init-grill** step — a YC Office Hours-style interrogation that surfaces your core idea before any implementation begins.
+The `init` workflow guides you through a structured, multi-step initialization process that creates markdown files to define what your project is about. Each step produces a file in `docs/`, and the workflow automatically detects which step you're on by checking which files already exist.
 
 ```bash
 # Run the initialization workflow
 anvil run init
 ```
 
-Each step in the initialization process produces a markdown file in `docs/`, building up a complete project definition over multiple steps. The first step, **1-init-grill**, uses the YC Product Diagnostic framework to force clarity on your problem, user, and value proposition before any code is written.
+Run `anvil run init` repeatedly — it always picks up where you left off.
+
+#### Step Flow
+
+| Step | Skill | Purpose | Output |
+|------|-------|---------|--------|
+| **1** | `1-init-grill` | YC Office Hours interrogation — nail down the core idea, problem, user, and wedge | `docs/PROJECT_BRIEF.md` |
+| **2** | `2-prd` | Turn the validated brief into a structured PRD with features, user stories, scope, and success metrics | `docs/PRD.md` |
+| **3** | `3-architecture` | Comprehensive architecture design — system, data, API, security, infra, frontend, backend, performance, scalability, reliability, testing, integrations, observability | `docs/ARCHITECTURE.md` |
+| **4** | *(future)* | Task breakdown & implementation planning | `docs/TASKS.md` |
 
 ### Examples
 
