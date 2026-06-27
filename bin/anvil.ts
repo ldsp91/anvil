@@ -1,19 +1,20 @@
 #!/usr/bin/env bun
 
-import inquirer from "inquirer";
-import { help } from "./commands/help.js";
-import { init } from "./commands/init.js";
-import { run } from "./commands/run.js";
-import { interactive } from "./commands/interactive.js";
-import { transcript } from "./commands/transcript.js";
-import { listWorkflows } from "./workflows/registry.js";
+import inquirer from 'inquirer';
+
+import { help } from './commands/help.js';
+import { init } from './commands/init.js';
+import { interactive } from './commands/interactive.js';
+import { run } from './commands/run.js';
+import { transcript } from './commands/transcript.js';
+import { listWorkflows } from './workflows/registry.js';
 
 const args = process.argv.slice(2);
 
 if (args.length === 0) {
   const { workflow } = await inquirer.prompt({
     name: "workflow",
-    type: "list",
+    type: "select",
     message: "Select a workflow:",
     choices: listWorkflows().map((w) => ({
       name: `${w.name} — ${w.description}`,
