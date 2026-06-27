@@ -1,4 +1,5 @@
 import { findWorkflow, listWorkflows } from "../workflows/registry.js";
+import { isWorkflowAllowed } from "../workflows/init-check.js";
 import { resolve, dirname } from "path";
 import { fileURLToPath } from "url";
 
@@ -22,6 +23,19 @@ export async function run(workflowId: string, prompt?: string): Promise<void> {
     console.error("Available workflows:");
     for (const w of listWorkflows()) {
       console.error(`  ${w.id}    ${w.description}`);
+    }
+    process.exit(1);
+  }
+
+  if (!isWorkflowAllowed(workflowId)) {
+    if (workflowId === "init") {
+      console.error(
+        `Error: workflow "init" is blocked — init is already complete.`
+      );
+    } else {
+      console.error(
+        `Error: workflow "${workflowId}" is blocked. Run the init workflow first (anvil run init).`
+      );
     }
     process.exit(1);
   }
