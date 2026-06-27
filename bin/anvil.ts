@@ -1,15 +1,30 @@
 #!/usr/bin/env bun
 
+import inquirer from "inquirer";
 import { help } from "./commands/help.js";
 import { init } from "./commands/init.js";
 import { run } from "./commands/run.js";
 import { interactive } from "./commands/interactive.js";
 import { transcript } from "./commands/transcript.js";
+import { listWorkflows } from "./workflows/registry.js";
 
 const args = process.argv.slice(2);
 
 if (args.length === 0) {
-  await interactive();
+  const { workflow } = await inquirer.prompt({
+    name: "workflow",
+    type: "list",
+    message: "Select a workflow:",
+    choices: listWorkflows().map((w) => ({
+      name: `${w.name} — ${w.description}`,
+      value: w.id,
+    })),
+  });
+
+  const selected = listWorkflows().find((w) => w.id === workflow);
+  if (selected) {
+    await selected.run();
+  }
 } else if (args[0] === "help") {
   help();
 } else if (args[0] === "init") {

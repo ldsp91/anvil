@@ -35,13 +35,15 @@
     "url": "https://github.com/ldsp91/anvil"
   },
   "devDependencies": {
-    "@types/bun": "latest"
+    "@types/bun": "latest",
+    "@types/inquirer": "^9.0.10"
   },
   "peerDependencies": {
     "typescript": "^5"
   },
   "dependencies": {
     "@ai-hero/sandcastle": "^0.10.0",
-    "@earendil-works/pi-coding-agent": "^0.80.0"
+    "@earendil-works/pi-coding-agent": "^0.80.0",
+    "inquirer": "^14.0.2"
   }
 }
