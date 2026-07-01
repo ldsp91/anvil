@@ -31,7 +31,7 @@ bunx anvil
 ```
 anvil                  Interactive workflow selector (prompts for selection)
 anvil run <workflow>   Run a specific workflow
-anvil init             Initialize project (config, skills, Docker image)
+anvil setup            Initialize project (config, skills, Docker image)
 anvil transcript       Generate transcripts from session files
 anvil help             Show help message
 ```
@@ -76,7 +76,7 @@ anvil run interactive
 anvil run init
 
 # Initialize a new project
-anvil init
+anvil setup
 
 # Generate transcripts from recorded sessions
 anvil transcript
@@ -84,7 +84,7 @@ anvil transcript
 
 ## Configuration
 
-Run `anvil init` to create an `anvil.json` config file:
+Run `anvil setup` to create an `anvil.json` config file:
 
 ```json
 {
@@ -129,7 +129,7 @@ anvil/
 │   ├── anvil.ts              # CLI entry point
 │   ├── commands/
 │   │   ├── help.ts           # Help command
-│   │   ├── init.ts           # Project initialization
+│   │   ├── setup.ts        # Project initialization
 │   │   ├── interactive.ts    # Interactive workflow runner
 │   │   ├── run.ts            # Workflow runner by ID
 │   │   └── transcript.ts     # Session transcript generator
@@ -138,7 +138,7 @@ anvil/
 │       ├── registry.ts       # Workflow registry
 │       └── types.ts          # Workflow type definitions
 ├── skills/                   # Auto-installed skill packs
-├── .sessions/                # Session logs (auto-created by `init`)
+├── .sessions/                # Session logs (auto-created by `setup`)
 ├── docs/transcripts/         # Generated transcripts
 ├── anvil.json                # Project configuration
 ├── anvil.schema.json         # JSON Schema for anvil.json
@@ -159,7 +159,7 @@ The `Dockerfile` creates a Sandcastle-compatible image with:
 ### Building
 
 ```bash
-anvil init
+anvil setup
 ```
 
 This builds a Docker image tagged `sandcastle:<project-name>` from the Dockerfile.

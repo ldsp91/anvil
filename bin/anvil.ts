@@ -5,7 +5,7 @@ import { dirname, resolve } from 'path';
 import { fileURLToPath } from 'url';
 
 import { help } from './commands/help.js';
-import { init } from './commands/init.js';
+import { setup } from './commands/setup.js';
 import { interactive } from './commands/interactive.js';
 import { run } from './commands/run.js';
 import { transcript } from './commands/transcript.js';
@@ -102,8 +102,8 @@ if (args.length === 0) {
   }
 } else if (args[0] === "help") {
   help();
-} else if (args[0] === "init") {
-  await init();
+} else if (args[0] === "setup") {
+  await setup();
 } else if (args[0] === "run") {
   await run(args[1], args[2]);
 } else if (args[0] === "transcript") {

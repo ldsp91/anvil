@@ -134,7 +134,7 @@ async function cloneAndCopySkills(): Promise<void> {
   console.log(`Installed ${skillDirs.length} skills to ${SKILLS_DIR}`);
 }
 
-export async function init(): Promise<void> {
+export async function setup(): Promise<void> {
   const folderName = process.cwd().split("/").pop()!;
 
   console.log(TAGLINE);
