@@ -4,10 +4,6 @@
   "description": "Configuration for anvil AI agent CLI",
   "type": "object",
   "properties": {
-    "model": {
-      "type": "string",
-      "description": "AI model to use (e.g. claude-sonnet-4-6, gpt-4)"
-    },
     "maxIterations": {
       "type": "integer",
       "description": "Maximum number of agent iterations",

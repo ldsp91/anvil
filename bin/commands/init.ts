@@ -35,7 +35,6 @@ function getDefaultConfig(): string {
     {
       $schema:
         "https://raw.githubusercontent.com/ldsp91/anvil/main/anvil.schema.json",
-      model: "claude-sonnet-4-6",
       maxIterations: 5,
       models,
     },

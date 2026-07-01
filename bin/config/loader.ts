@@ -5,7 +5,6 @@ const CONFIG_FILENAME = "anvil.json";
 
 export interface AnvilConfig {
   $schema?: string;
-  model?: string;
   maxIterations?: number;
   models?: Record<string, string>;
 }

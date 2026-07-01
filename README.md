@@ -89,25 +89,6 @@ Run `anvil init` to create an `anvil.json` config file:
 ```json
 {
   "$schema": "https://raw.githubusercontent.com/ldsp91/anvil/main/anvil.schema.json",
-  "model": "claude-sonnet-4-6",
-  "maxIterations": 5
-}
-```
-
-| Property | Type | Description |
-|---|---|---|
-| `model` | `string` | AI model to use (e.g. `claude-sonnet-4-6`, `gpt-4`) |
-| `maxIterations` | `integer` | Maximum number of agent iterations (min: 1) |
-| `models` | `object` | Per-workflow model overrides (see below) |
-
-### Per-Workflow Model Configuration
-
-You can configure different models for each workflow (except `interactive`, which uses whatever model you select in-session). Add a `models` object to your `anvil.json`:
-
-```json
-{
-  "$schema": "https://raw.githubusercontent.com/ldsp91/anvil/main/anvil.schema.json",
-  "model": "claude-sonnet-4-6",
   "maxIterations": 5,
   "models": {
     "init": "claude-sonnet-4-6",
@@ -116,13 +97,22 @@ You can configure different models for each workflow (except `interactive`, whic
 }
 ```
 
-The `models` object maps workflow IDs to model names. For example:
+| Property | Type | Description |
+|---|---|---|
+| `maxIterations` | `integer` | Maximum number of agent iterations (min: 1) |
+| `models` | `object` | Per-workflow model overrides (see below) |
+
+### Per-Workflow Model Configuration
+
+You can configure different models for each workflow (except `interactive`, which uses whatever model you select in-session). The `models` object maps workflow IDs to model names:
 
 ```json
 {
+  "$schema": "https://raw.githubusercontent.com/ldsp91/anvil/main/anvil.schema.json",
+  "maxIterations": 5,
   "models": {
     "init": "claude-sonnet-4-6",
-    "my-custom-workflow": "gpt-4"
+    "placeholder": "gpt-4"
   }
 }
 ```
