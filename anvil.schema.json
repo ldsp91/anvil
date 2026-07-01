@@ -11,11 +11,26 @@
     },
     "models": {
       "type": "object",
-      "description": "Per-workflow model overrides. Maps workflow IDs to model names (e.g. { \"init\": \"claude-sonnet-4-6\", \"placeholder\": \"gpt-4\" }). The \"interactive\" workflow is excluded — it uses whatever model you select in-session.",
-      "additionalProperties": {
-        "type": "string",
-        "description": "Model name (e.g. claude-sonnet-4-6, gpt-4)"
-      }
+      "description": "Model configuration split by workflows and subagents.",
+      "properties": {
+        "workflows": {
+          "type": "object",
+          "description": "Per-workflow model overrides. Maps workflow IDs to model names. The \"interactive\" workflow is excluded — it uses whatever model you select in-session.",
+          "additionalProperties": {
+            "type": "string",
+            "description": "Model name (e.g. claude-sonnet-4-6, gpt-4)"
+          }
+        },
+        "subagents": {
+          "type": "object",
+          "description": "Per-subagent model overrides. Maps subagent IDs to model names.",
+          "additionalProperties": {
+            "type": "string",
+            "description": "Model name (e.g. claude-sonnet-4-6, gpt-4)"
+          }
+        }
+      },
+      "additionalProperties": false
     }
   },
   "additionalProperties": false

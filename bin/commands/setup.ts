@@ -18,16 +18,16 @@ const DOCS_AGENTS_SRC = resolve(rootDir, "..", "docs", "agents");
 const DOCS_AGENTS_DST = resolve(process.cwd(), "docs", "agents");
 
 /**
- * Generate default config with all workflow IDs pre-filled in the models object.
+ * Generate default config with all workflow IDs pre-filled in the nested models object.
  */
 function getDefaultConfig(): string {
   const workflows = listWorkflows();
-  const models: Record<string, string> = {};
+  const workflowModels: Record<string, string> = {};
   
   // Pre-fill all workflow IDs with empty strings (except interactive)
   for (const workflow of workflows) {
     if (workflow.id !== 'interactive') {
-      models[workflow.id] = '';
+      workflowModels[workflow.id] = '';
     }
   }
   
@@ -36,7 +36,10 @@ function getDefaultConfig(): string {
       $schema:
         "https://raw.githubusercontent.com/ldsp91/anvil/main/anvil.schema.json",
       maxIterations: 5,
-      models,
+      models: {
+        workflows: workflowModels,
+        subagents: {},
+      },
     },
     null,
     2,
@@ -45,6 +48,7 @@ function getDefaultConfig(): string {
 
 /**
  * Update existing anvil.json config with any missing workflow IDs.
+ * Supports both the new nested structure and the legacy flat structure.
  * Returns the updated config object, or undefined if nothing changed.
  */
 function updateConfigWorkflows(): Record<string, any> | undefined {
@@ -56,9 +60,27 @@ function updateConfigWorkflows(): Record<string, any> | undefined {
       return undefined;
     }
     
-    // Initialize models object if it doesn't exist
+    // Normalize legacy flat models → nested structure
+    if (config.models && typeof config.models === 'object' && !Array.isArray(config.models)) {
+      const keys = Object.keys(config.models);
+      // If keys look like workflow IDs (no "workflows" or "subagents" key), treat as legacy flat
+      if (!config.models.workflows && !config.models.subagents) {
+        config.models = {
+          workflows: config.models as Record<string, string>,
+          subagents: {},
+        };
+      }
+    }
+    
+    // Initialize nested models object if it doesn't exist
     if (!config.models) {
-      config.models = {};
+      config.models = { workflows: {}, subagents: {} };
+    }
+    if (!config.models.workflows) {
+      config.models.workflows = {};
+    }
+    if (!config.models.subagents) {
+      config.models.subagents = {};
     }
     
     const workflows = listWorkflows();
@@ -66,8 +88,8 @@ function updateConfigWorkflows(): Record<string, any> | undefined {
     
     // Add any missing workflow IDs
     for (const workflow of workflows) {
-      if (workflow.id !== 'interactive' && !config.models[workflow.id]) {
-        config.models[workflow.id] = '';
+      if (workflow.id !== 'interactive' && !config.models.workflows[workflow.id]) {
+        config.models.workflows[workflow.id] = '';
         changed = true;
       }
     }

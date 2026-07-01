@@ -1,3 +1,3 @@
 - NEVER run the binary!
 - Always read the README.md to get an understanding of the project.
-- When adding or modifying workflows, ensure the corresponding model field is automatically bootstrapped in the init anvil.json (see `bin/commands/init.ts` → `getDefaultConfig()`). The workflow ID must appear in the `models` object with an empty string value.
+- When adding or modifying workflows, ensure the corresponding model field is automatically bootstrapped in the init anvil.json (see `bin/commands/setup.ts` → `getDefaultConfig()`). The workflow ID must appear in the `models.workflows` object with an empty string value.

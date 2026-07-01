@@ -3,7 +3,7 @@ import { resolve, dirname } from "path";
 import { fileURLToPath } from "url";
 import { ModelRegistry } from "@earendil-works/pi-coding-agent";
 import { AuthStorage } from "@earendil-works/pi-coding-agent";
-import { getWorkflowModels, validateWorkflowModel } from "../config/loader.js";
+import { getWorkflowModels, getSubagentModels, validateWorkflowModel } from "../config/loader.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const rootDir = resolve(__dirname, "..");
@@ -73,7 +73,7 @@ export async function interactive(): Promise<void> {
     }
   }
 
-  // Resolve model from config
+  // Resolve model from nested config
   const workflowModels = getWorkflowModels();
   const modelName = workflowModels[selected.id];
   const model = modelName ? await resolveModel(modelName) : undefined;

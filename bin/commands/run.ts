@@ -5,7 +5,7 @@ import { fileURLToPath } from "url";
 import { running, error, info, status, divider, color } from "../styles.js";
 import { ModelRegistry } from "@earendil-works/pi-coding-agent";
 import { AuthStorage } from "@earendil-works/pi-coding-agent";
-import { getWorkflowModels, validateWorkflowModel } from "../config/loader.js";
+import { getWorkflowModels, getSubagentModels, validateWorkflowModel } from "../config/loader.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const rootDir = resolve(__dirname, "..");
@@ -93,7 +93,7 @@ export async function run(workflowId: string, prompt?: string): Promise<void> {
     resolve(rootDir, "..", "skills", name)
   );
 
-  // Resolve model from config
+  // Resolve model from nested config
   const workflowModels = getWorkflowModels();
   const modelName = workflowModels[workflow.id];
   const model = modelName ? await resolveModel(modelName) : undefined;

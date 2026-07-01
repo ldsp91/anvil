@@ -91,8 +91,13 @@ Run `anvil setup` to create an `anvil.json` config file:
   "$schema": "https://raw.githubusercontent.com/ldsp91/anvil/main/anvil.schema.json",
   "maxIterations": 5,
   "models": {
-    "init": "claude-sonnet-4-6",
-    "placeholder": "gpt-4"
+    "workflows": {
+      "init": "claude-sonnet-4-6",
+      "placeholder": "gpt-4"
+    },
+    "subagents": {
+      "researcher": "claude-sonnet-4-6"
+    }
   }
 }
 ```
@@ -100,19 +105,33 @@ Run `anvil setup` to create an `anvil.json` config file:
 | Property | Type | Description |
 |---|---|---|
 | `maxIterations` | `integer` | Maximum number of agent iterations (min: 1) |
-| `models` | `object` | Per-workflow model overrides (see below) |
+| `models` | `object` | Model configuration split by workflows and subagents (see below) |
 
 ### Per-Workflow Model Configuration
 
-You can configure different models for each workflow (except `interactive`, which uses whatever model you select in-session). The `models` object maps workflow IDs to model names:
+Configure different models for each workflow (except `interactive`, which uses whatever model you select in-session). The `models.workflows` object maps workflow IDs to model names:
 
 ```json
 {
-  "$schema": "https://raw.githubusercontent.com/ldsp91/anvil/main/anvil.schema.json",
-  "maxIterations": 5,
   "models": {
-    "init": "claude-sonnet-4-6",
-    "placeholder": "gpt-4"
+    "workflows": {
+      "init": "claude-sonnet-4-6",
+      "placeholder": "gpt-4"
+    }
+  }
+}
+```
+
+### Per-Subagent Model Configuration
+
+Configure models for subagents used within workflows. The `models.subagents` object maps subagent IDs to model names:
+
+```json
+{
+  "models": {
+    "subagents": {
+      "researcher": "claude-sonnet-4-6"
+    }
   }
 }
 ```

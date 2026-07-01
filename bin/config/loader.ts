@@ -6,7 +6,10 @@ const CONFIG_FILENAME = "anvil.json";
 export interface AnvilConfig {
   $schema?: string;
   maxIterations?: number;
-  models?: Record<string, string>;
+  models?: {
+    workflows?: Record<string, string>;
+    subagents?: Record<string, string>;
+  };
 }
 
 /**
@@ -33,7 +36,16 @@ export function loadAnvilConfig(cwd: string = process.cwd()): AnvilConfig | unde
  */
 export function getWorkflowModels(cwd: string = process.cwd()): Record<string, string> {
   const config = loadAnvilConfig(cwd);
-  return config?.models ?? {};
+  return config?.models?.workflows ?? {};
+}
+
+/**
+ * Get per-subagent model overrides from the config.
+ * Returns a map of subagent ID → model name string, or empty object.
+ */
+export function getSubagentModels(cwd: string = process.cwd()): Record<string, string> {
+  const config = loadAnvilConfig(cwd);
+  return config?.models?.subagents ?? {};
 }
 
 /**
@@ -47,7 +59,7 @@ export function validateWorkflowModel(
   const modelName = workflowModels[workflowId];
   
   if (!modelName || modelName.trim() === '') {
-    return `Error: Workflow "${workflowId}" does not have a model configured in anvil.json.\nPlease add the model configuration to anvil.json:\n{\n  "models": {\n    "${workflowId}": "<model-name>"\n  }\n}`;
+    return `Error: Workflow "${workflowId}" does not have a model configured in anvil.json.\nPlease add the model configuration to anvil.json:\n{\n  "models": {\n    "workflows": {\n      "${workflowId}": "<model-name>"\n    }\n  }\n}`;
   }
   
   return undefined;
