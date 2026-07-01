@@ -39,6 +39,8 @@ RUN npm install -g @mariozechner/pi-coding-agent
 
 RUN pi install npm:pi-headroom
 RUN pi install npm:@howaboua/pi-vent
+RUN pi install npm:pi-smart-web-search
+RUN pi install npm:pi-smart-fetch
 
 USER ${AGENT_UID}:${AGENT_GID}
 

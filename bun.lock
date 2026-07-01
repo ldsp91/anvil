@@ -5,8 +5,8 @@
     "": {
       "name": "anvil",
       "dependencies": {
-        "@ai-hero/sandcastle": "^0.10.0",
-        "@earendil-works/pi-coding-agent": "^0.80.0",
+        "@ai-hero/sandcastle": "^0.12.0",
+        "@earendil-works/pi-coding-agent": "^0.80.2",
         "inquirer": "^14.0.2",
       },
       "devDependencies": {
@@ -14,12 +14,12 @@
         "@types/inquirer": "^9.0.10",
       },
       "peerDependencies": {
-        "typescript": "^5",
+        "typescript": "^5.9.3",
       },
     },
   },
   "packages": {
-    "@ai-hero/sandcastle": ["@ai-hero/sandcastle@0.10.0", "", { "dependencies": { "@clack/prompts": "^1.1.0" }, "peerDependencies": { "@daytona/sdk": "^0.164.0", "@vercel/sandbox": ">=1.0.0" }, "optionalPeers": ["@daytona/sdk", "@vercel/sandbox"], "bin": { "sandcastle": "dist/main.js" } }, "sha512-7iUX90cF/RWP80OfcOf/1fkJyoPRAJo4ICyttpWWokKoFGGnuQ82lvxKpU3IEiWPbwT/g8O2PotTzgiimtQT7g=="],
+    "@ai-hero/sandcastle": ["@ai-hero/sandcastle@0.12.0", "", { "dependencies": { "@clack/prompts": "^1.1.0" }, "peerDependencies": { "@daytona/sdk": "^0.164.0", "@vercel/sandbox": ">=1.0.0" }, "optionalPeers": ["@daytona/sdk", "@vercel/sandbox"], "bin": { "sandcastle": "dist/main.js" } }, "sha512-kdQ414rM8t1QiWeqZ3Klz4KSd0PqQG4bRVuqGpRDUomWhojSZkEAc1tbcEcThVmBEaHkCt8LmYR49vqEPNIoYQ=="],
 
     "@anthropic-ai/sdk": ["@anthropic-ai/sdk@0.91.1", "", { "dependencies": { "json-schema-to-ts": "^3.1.1" }, "peerDependencies": { "zod": "^3.25.0 || ^4.0.0" }, "optionalPeers": ["zod"], "bin": { "anthropic-ai-sdk": "bin/cli" } }, "sha512-LAmu761tSN9r66ixvmciswUj/ZC+1Q4iAfpedTfSVLeswRwnY3n2Nb6Tsk+cLPP28aLOPWeMgIuTuCcMC6W/iw=="],
 

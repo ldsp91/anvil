@@ -39,11 +39,11 @@
     "@types/inquirer": "^9.0.10"
   },
   "peerDependencies": {
-    "typescript": "^5"
+    "typescript": "^5.9.3"
   },
   "dependencies": {
-    "@ai-hero/sandcastle": "^0.10.0",
-    "@earendil-works/pi-coding-agent": "^0.80.0",
+    "@ai-hero/sandcastle": "^0.12.0",
+    "@earendil-works/pi-coding-agent": "^0.80.2",
     "inquirer": "^14.0.2"
   }
 }
