@@ -1,6 +1,8 @@
 export interface WorkflowRunOptions {
   /** Resolved absolute paths to skill directories to load */
   skillPaths: string[];
+  /** Model to use for this workflow (resolved from anvil.json models). Undefined means use default. */
+  model?: any;
 }
 
 export interface Workflow {

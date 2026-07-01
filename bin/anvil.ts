@@ -12,9 +12,29 @@ import { transcript } from './commands/transcript.js';
 import { color, divider, error, running, status, TAGLINE, workflowCard } from './styles.js';
 import { isWorkflowAllowed } from './workflows/init-check.js';
 import { findWorkflow, listWorkflows } from './workflows/registry.js';
+import { getWorkflowModels, validateWorkflowModel } from './config/loader.js';
+import { ModelRegistry } from '@earendil-works/pi-coding-agent';
+import { AuthStorage } from '@earendil-works/pi-coding-agent';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const rootDir = resolve(__dirname, "..");
+
+/**
+ * Resolve a model name string to a Model object using the ModelRegistry.
+ * Returns undefined if the model is not found.
+ */
+async function resolveModel(modelName: string): Promise<any | undefined> {
+  try {
+    const authStorage = AuthStorage.create();
+    const modelRegistry = ModelRegistry.create(authStorage);
+
+    // Search all models for a match by ID
+    const allModels = modelRegistry.getAll();
+    return allModels.find((m: any) => m.id === modelName);
+  } catch {
+    return undefined;
+  }
+}
 
 const args = process.argv.slice(2);
 
@@ -56,13 +76,29 @@ if (args.length === 0) {
 
   const selected = findWorkflow(workflow);
   if (selected) {
+    // Validate model configuration (skip for interactive workflow)
+    if (selected.id !== 'interactive') {
+      const workflowModels = getWorkflowModels();
+      const validationError = validateWorkflowModel(selected.id, workflowModels);
+      if (validationError) {
+        console.error(validationError);
+        process.exit(1);
+      }
+    }
+
     console.log(
       `\n${running(`Launching ${color(selected.name, "cyan")}...`)}\n`,
     );
     const skillPaths = (selected.skills ?? []).map((name) =>
       resolve(rootDir, "skills", name),
     );
-    await selected.run(undefined, { skillPaths });
+
+    // Resolve model from config
+    const workflowModels = getWorkflowModels();
+    const modelName = workflowModels[selected.id];
+    const model = modelName ? await resolveModel(modelName) : undefined;
+
+    await selected.run(undefined, { skillPaths, model });
   }
 } else if (args[0] === "help") {
   help();

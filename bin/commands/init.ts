@@ -5,6 +5,7 @@ import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { color, divider, running, status, TAGLINE } from '../styles.js';
+import { listWorkflows } from '../workflows/registry.js';
 
 const __dirname = resolve(fileURLToPath(import.meta.url), "..");
 const rootDir = resolve(__dirname, "..");
@@ -16,16 +17,67 @@ const SESSIONS_DIR = ".sessions";
 const DOCS_AGENTS_SRC = resolve(rootDir, "..", "docs", "agents");
 const DOCS_AGENTS_DST = resolve(process.cwd(), "docs", "agents");
 
-const DEFAULT_CONFIG = JSON.stringify(
-  {
-    $schema:
-      "https://raw.githubusercontent.com/ldsp91/anvil/main/anvil.schema.json",
-    model: "claude-sonnet-4-6",
-    maxIterations: 5,
-  },
-  null,
-  2,
-);
+/**
+ * Generate default config with all workflow IDs pre-filled in the models object.
+ */
+function getDefaultConfig(): string {
+  const workflows = listWorkflows();
+  const models: Record<string, string> = {};
+  
+  // Pre-fill all workflow IDs with empty strings (except interactive)
+  for (const workflow of workflows) {
+    if (workflow.id !== 'interactive') {
+      models[workflow.id] = '';
+    }
+  }
+  
+  return JSON.stringify(
+    {
+      $schema:
+        "https://raw.githubusercontent.com/ldsp91/anvil/main/anvil.schema.json",
+      model: "claude-sonnet-4-6",
+      maxIterations: 5,
+      models,
+    },
+    null,
+    2,
+  );
+}
+
+/**
+ * Update existing anvil.json config with any missing workflow IDs.
+ * Returns the updated config object, or undefined if nothing changed.
+ */
+function updateConfigWorkflows(): Record<string, any> | undefined {
+  try {
+    const raw = readFileSync(CONFIG_PATH, "utf-8");
+    const config = JSON.parse(raw);
+    
+    if (!config || typeof config !== 'object') {
+      return undefined;
+    }
+    
+    // Initialize models object if it doesn't exist
+    if (!config.models) {
+      config.models = {};
+    }
+    
+    const workflows = listWorkflows();
+    let changed = false;
+    
+    // Add any missing workflow IDs
+    for (const workflow of workflows) {
+      if (workflow.id !== 'interactive' && !config.models[workflow.id]) {
+        config.models[workflow.id] = '';
+        changed = true;
+      }
+    }
+    
+    return changed ? config : undefined;
+  } catch {
+    return undefined;
+  }
+}
 
 function copyDirSync(src: string, dst: string): void {
   const stat = statSync(src);
@@ -93,8 +145,15 @@ export async function init(): Promise<void> {
   console.log("");
 
   if (!existsSync(CONFIG_PATH)) {
-    writeFileSync(CONFIG_PATH, DEFAULT_CONFIG, "utf-8");
+    writeFileSync(CONFIG_PATH, getDefaultConfig(), "utf-8");
     console.log(status(`Created ${color(CONFIG_PATH, "magenta")}`));
+  } else {
+    // Update existing config with any missing workflow IDs
+    const updated = updateConfigWorkflows();
+    if (updated) {
+      writeFileSync(CONFIG_PATH, JSON.stringify(updated, null, 2), "utf-8");
+      console.log(status(`Updated ${color(CONFIG_PATH, "magenta")} with new workflow(s)`));
+    }
   }
 
   // Create .sessions directory for session storage

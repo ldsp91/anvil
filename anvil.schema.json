@@ -12,6 +12,14 @@
       "type": "integer",
       "description": "Maximum number of agent iterations",
       "minimum": 1
+    },
+    "models": {
+      "type": "object",
+      "description": "Per-workflow model overrides. Maps workflow IDs to model names (e.g. { \"init\": \"claude-sonnet-4-6\", \"placeholder\": \"gpt-4\" }). The \"interactive\" workflow is excluded — it uses whatever model you select in-session.",
+      "additionalProperties": {
+        "type": "string",
+        "description": "Model name (e.g. claude-sonnet-4-6, gpt-4)"
+      }
     }
   },
   "additionalProperties": false

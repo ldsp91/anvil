@@ -51,6 +51,7 @@ export const interactiveWorkflow: Workflow = {
           services,
           sessionManager,
           sessionStartEvent,
+          model: options?.model,
         })),
         services,
         diagnostics: services.diagnostics,

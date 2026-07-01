@@ -1,6 +1,9 @@
 import { listWorkflows } from "../workflows/registry.js";
 import { resolve, dirname } from "path";
 import { fileURLToPath } from "url";
+import { ModelRegistry } from "@earendil-works/pi-coding-agent";
+import { AuthStorage } from "@earendil-works/pi-coding-agent";
+import { getWorkflowModels, validateWorkflowModel } from "../config/loader.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const rootDir = resolve(__dirname, "..");
@@ -16,6 +19,23 @@ function readLine(): Promise<string> {
       resolve(answer.trim());
     });
   });
+}
+
+/**
+ * Resolve a model name string to a Model object using the ModelRegistry.
+ * Returns undefined if the model is not found.
+ */
+async function resolveModel(modelName: string): Promise<any | undefined> {
+  try {
+    const authStorage = AuthStorage.create();
+    const modelRegistry = ModelRegistry.create(authStorage);
+
+    // Search all models for a match by ID
+    const allModels = modelRegistry.getAll();
+    return allModels.find((m: any) => m.id === modelName);
+  } catch {
+    return undefined;
+  }
 }
 
 export async function interactive(): Promise<void> {
@@ -43,5 +63,20 @@ export async function interactive(): Promise<void> {
     resolve(rootDir, "..", "skills", name)
   );
 
-  await selected.run(undefined, { skillPaths });
+  // Validate model configuration (skip for interactive workflow)
+  if (selected.id !== 'interactive') {
+    const workflowModels = getWorkflowModels();
+    const error = validateWorkflowModel(selected.id, workflowModels);
+    if (error) {
+      console.error(error);
+      process.exit(1);
+    }
+  }
+
+  // Resolve model from config
+  const workflowModels = getWorkflowModels();
+  const modelName = workflowModels[selected.id];
+  const model = modelName ? await resolveModel(modelName) : undefined;
+
+  await selected.run(undefined, { skillPaths, model });
 }

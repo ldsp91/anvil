@@ -98,6 +98,38 @@ Run `anvil init` to create an `anvil.json` config file:
 |---|---|---|
 | `model` | `string` | AI model to use (e.g. `claude-sonnet-4-6`, `gpt-4`) |
 | `maxIterations` | `integer` | Maximum number of agent iterations (min: 1) |
+| `models` | `object` | Per-workflow model overrides (see below) |
+
+### Per-Workflow Model Configuration
+
+You can configure different models for each workflow (except `interactive`, which uses whatever model you select in-session). Add a `models` object to your `anvil.json`:
+
+```json
+{
+  "$schema": "https://raw.githubusercontent.com/ldsp91/anvil/main/anvil.schema.json",
+  "model": "claude-sonnet-4-6",
+  "maxIterations": 5,
+  "models": {
+    "init": "claude-sonnet-4-6",
+    "placeholder": "gpt-4"
+  }
+}
+```
+
+The `models` object maps workflow IDs to model names. For example:
+
+```json
+{
+  "models": {
+    "init": "claude-sonnet-4-6",
+    "my-custom-workflow": "gpt-4"
+  }
+}
+```
+
+**Note:** The `interactive` workflow is excluded from per-workflow model configuration because it uses whatever model you select in-session via the Pi terminal UI.
+
+**Available model names:** Use the model ID as defined in the Pi AI model registry (e.g., `claude-sonnet-4-6`, `gpt-4`, `claude-opus-4-5`). You can find available models by running `pi` and checking the model selector.
 
 ## Project Structure
 

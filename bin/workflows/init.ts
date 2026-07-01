@@ -38,7 +38,8 @@ function getInitStep(): number {
 async function runInitStep(
   step: number,
   skillPaths: string[],
-  sessionDir: string
+  sessionDir: string,
+  model?: any
 ): Promise<void> {
   const createRuntime = async ({
     cwd,
@@ -61,6 +62,7 @@ async function runInitStep(
         services,
         sessionManager,
         sessionStartEvent,
+        model,
       })),
       services,
       diagnostics: services.diagnostics,
@@ -118,6 +120,6 @@ export const initWorkflow: Workflow = {
     const step = getInitStep();
     console.log(`Init: Running step ${step}...`);
 
-    await runInitStep(step, skillPaths, sessionDir);
+    await runInitStep(step, skillPaths, sessionDir, options?.model);
   },
 };

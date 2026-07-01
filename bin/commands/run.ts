@@ -3,9 +3,29 @@ import { isWorkflowAllowed } from "../workflows/init-check.js";
 import { resolve, dirname } from "path";
 import { fileURLToPath } from "url";
 import { running, error, info, status, divider, color } from "../styles.js";
+import { ModelRegistry } from "@earendil-works/pi-coding-agent";
+import { AuthStorage } from "@earendil-works/pi-coding-agent";
+import { getWorkflowModels, validateWorkflowModel } from "../config/loader.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const rootDir = resolve(__dirname, "..");
+
+/**
+ * Resolve a model name string to a Model object using the ModelRegistry.
+ * Returns undefined if the model is not found.
+ */
+async function resolveModel(modelName: string): Promise<any | undefined> {
+  try {
+    const authStorage = AuthStorage.create();
+    const modelRegistry = ModelRegistry.create(authStorage);
+
+    // Search all models for a match by ID
+    const allModels = modelRegistry.getAll();
+    return allModels.find((m: any) => m.id === modelName);
+  } catch {
+    return undefined;
+  }
+}
 
 export async function run(workflowId: string, prompt?: string): Promise<void> {
   if (!workflowId) {
@@ -59,11 +79,26 @@ export async function run(workflowId: string, prompt?: string): Promise<void> {
   console.log(divider());
   console.log("");
 
+  // Validate model configuration (skip for interactive workflow)
+  if (workflow.id !== 'interactive') {
+    const workflowModels = getWorkflowModels();
+    const validationError = validateWorkflowModel(workflow.id, workflowModels);
+    if (validationError) {
+      console.error(validationError);
+      process.exit(1);
+    }
+  }
+
   const skillPaths = (workflow.skills ?? []).map((name) =>
     resolve(rootDir, "..", "skills", name)
   );
 
-  await workflow.run(prompt, { skillPaths });
+  // Resolve model from config
+  const workflowModels = getWorkflowModels();
+  const modelName = workflowModels[workflow.id];
+  const model = modelName ? await resolveModel(modelName) : undefined;
+
+  await workflow.run(prompt, { skillPaths, model });
 
   console.log("");
   console.log(status(`Workflow "${workflow.name}" completed.`));
